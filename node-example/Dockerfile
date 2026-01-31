@@ -1,14 +1,17 @@
-FROM node:22-alpine
-
-ARG APP_ENV
-
-ENV APP_ENV=${APP_ENV}
+# STAGE 1: builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
 COPY . .
 
 RUN npm i --production
+
+
+# STAGE 2: runtime
+FROM node:22-alpine
+
+COPY --from=builder /app ./
 
 EXPOSE 3000
 
